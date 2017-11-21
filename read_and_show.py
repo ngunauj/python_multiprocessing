@@ -1,11 +1,10 @@
 import multiprocessing
 import time
-
-def writer_proc(q):
-    global num      
+num = multiprocessing.Value("d",100)
+def writer_proc(q):     
     while q.qsize() < 10:
-        q.put(num, block = False)
-        num += 1
+        q.put(int(num.value), block = False)
+        num.value = num.value + 1
 
 def reader_proc(q):      
     try:
@@ -16,9 +15,7 @@ def reader_proc(q):
         pass
  
 if __name__ == "__main__":
-    q = multiprocessing.Queue()
-    num = 100
-    
+    q = multiprocessing.Queue()  
     while True:
         writer = multiprocessing.Process(target=writer_proc, args=(q,))  
         writer.start()   
